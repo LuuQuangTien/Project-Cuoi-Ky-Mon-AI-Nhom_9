@@ -1,6 +1,6 @@
 import pygame
 from Button import Button
-from Pathfinding import BFS, DFS, UCS, Greedy
+from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM
 from collections import deque
 
 #__________________________Game definition___________________________
@@ -162,6 +162,18 @@ class Menu():
                 if not(solution):
                     greedy_tail = Greedy(snake, snake.snake[-1])
                     solution = greedy_tail.Solving()
+            case("SIMULATED_ANEALING"):
+                sa = SIMULATED_ANEALING(snake, apple.position, T = 1000, alpha = 0.9)
+                solution = sa.Solving()
+                if not(solution):
+                    sa_tail = SIMULATED_ANEALING(snake, snake.snake[-1], T = 1000, alpha = 0.9)
+                    solution = sa_tail.Solving()
+            case("BEAM"):
+                beam = BEAM(snake, apple.position, 3)
+                solution = beam.Solving()
+                if not(solution):
+                    beam_tail = BEAM(snake, snake.snake[-1], 5)
+                    solution = beam_tail.Solving()
 
 
         if(solution and len(solution) > 1):
