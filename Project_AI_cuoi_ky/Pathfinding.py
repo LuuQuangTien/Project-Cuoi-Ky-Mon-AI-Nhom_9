@@ -3,6 +3,8 @@ import numpy as np
 from pygame import Vector2
 from collections import deque
 import heapq
+import time
+from Sensorless import SensorlessBoard
 
 class BFS():
     def __init__(self, snake, goal, start = None):
@@ -363,9 +365,54 @@ class SIMULATED_ANEALING:
 
         return next_pos
 
-class FORWARD_CHECKING:
-    def __init__(self):
-        pass
+class BACKTRACKING:
+    def __init__(self, snake, goal):
+        self.snake = snake
+        self.start = self.snake.snake[0]
+        self.goal = goal
+        self.wall_set = {tuple(pos) for pos in self.snake.wall_pos}
+        self.snake_body_set = {tuple(pos) for pos in self.snake.snake[:-1]}
+        self.visit_limit = 5000
+        self.nodes_visited = 0
+
+    def solve(self):
+        path = deque()
+        visited = {tuple(self.start)}
+        if self._solve_util(self.start, path, visited):
+            path.appendleft(self.start)
+            return path
+        print(f"Backtracking stopped. Visited {self.nodes_visited} nodes.")
+        return None
+
+    def _solve_util(self, current_pos, path, visited):
+        self.nodes_visited += 1
+        if self.nodes_visited > self.visit_limit:
+            return False
+        if current_pos == self.goal:
+            return True
+        directions = sorted(
+            self.snake.direction,
+            key=lambda d: (current_pos.x + d.x - self.goal.x) ** 2 + (current_pos.y + d.y - self.goal.y) ** 2
+        )
+        for direction in directions:
+            next_pos = current_pos + direction
+            next_pos_tuple = tuple(next_pos)
+            if not (0 <= next_pos.x < self.snake.screen_cols and 0 <= next_pos.y < self.snake.screen_rows):
+                continue
+            if next_pos_tuple in self.wall_set or next_pos_tuple in self.snake_body_set:
+                continue
+            if next_pos_tuple in visited:
+                continue
+            visited.add(next_pos_tuple)
+            path.append(next_pos)
+            if self._solve_util(next_pos, path, visited):
+                return True
+            path.pop()
+            visited.remove(next_pos_tuple)
+        return False
+
+    def Solving(self):
+        return self.solve()
 
 class AC_3:
     def __init__(self):
