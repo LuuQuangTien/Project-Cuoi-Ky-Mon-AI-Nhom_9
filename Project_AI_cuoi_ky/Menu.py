@@ -1,6 +1,6 @@
 import pygame
 from Button import Button
-from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE
+from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE, BACKTRACKING
 from collections import deque
 
 #__________________________Game definition___________________________
@@ -34,7 +34,7 @@ ALGORITHMS = {
     "SIM A": "SIMULATED_ANEALING",
     "SEN_LESS": "SENSORLESS",
     "PAR_OBS": "PARTIALLY_OBSERVABLE",
-    "FORWARD": "FORWARD_CHECKING",
+    "BACK": "BACKTRACKING",
     "AC3": "AC3",
 }
 
@@ -43,7 +43,7 @@ METHOD_LAYOUT = [
     ["UCS", "GREEDY"],
     ["BEAM", "SIM A"],
     ["SEN_LESS", "PAR_OBS"],
-    ["FORWARD", "AC3"]
+    ["BACK", "AC3"]
 ]
 
 
@@ -186,6 +186,12 @@ class Menu():
                 if not(solution):
                     pa_ob_tail = PARTIALLY_OBSERVABLE(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
                     solution = pa_ob_tail.Solving()
+            case ("BACKTRACKING"):
+                back = BACKTRACKING(snake, apple.position)
+                solution = back.Solving()
+                if not (solution):
+                    back_tail = BACKTRACKING(snake, snake.snake[-1])
+                    solution = back_tail.Solving()
 
 
         if(solution and len(solution) > 1):
