@@ -62,6 +62,8 @@ class Menu():
         self.method = None
         self.algorithm_buttons = {}
         self.mode = None
+        self.current_solver = None
+        self.current_solver_method = None
 
         #___MENU___
         self.rect_play = Button(self.screen, self.font, button_x, button_y - 75, button_width, button_height, "PLAY", GREEN, BLACK)
@@ -193,7 +195,6 @@ class Menu():
                     back_tail = BACKTRACKING(snake, snake.snake[-1])
                     solution = back_tail.Solving()
 
-
         if(solution and len(solution) > 1):
             solution.popleft()
             return solution
@@ -240,8 +241,14 @@ class Menu():
                 else: state = "SIMULATE"
         elif(state == "COMPUTER"):
             for method_name, button in self.algorithm_buttons.items():
-                if button.draw(events, "press"):
-                    self.method = self.use_method(self.method, method_name)
+                pressed = button.draw(events, "press")
+                if pressed:
+                    # reset tất cả nút khác, không cho các nút đậm cùng lúc
+                    for other_name, other_button in self.algorithm_buttons.items():
+                        if other_name != method_name:
+                            other_button.clicked = False
+                    button.clicked = True
+                    self.method = method_name
             if (self.rect_startplaying.draw(events, "normal")):
                 if(self.method is not None):
                     print("clicked STARTPLAY")
