@@ -515,7 +515,8 @@ class PARTIALLY_OBSERVABLE:
                     goal_path.append(state)
                     state = path[state]
                 goal_path.reverse()
-                return goal_path
+                solution = deque(Vector2(goal[0], goal[1]) for goal in goal_path)
+                return solution
 
             visible = self.Observable(stateVector2)
             for substate_Vector2 in self.snake.Is_safe(stateVector2):

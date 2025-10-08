@@ -183,6 +183,9 @@ class Menu():
             case("PARTIALLY_OBSERVABLE"):
                 pa_ob = PARTIALLY_OBSERVABLE(snake, apple.position, grid_size = self.screen_rows * self.screen_cols)
                 solution = pa_ob.Solving()
+                if not(solution):
+                    pa_ob_tail = PARTIALLY_OBSERVABLE(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
+                    solution = pa_ob_tail.Solving()
 
 
         if(solution and len(solution) > 1):
