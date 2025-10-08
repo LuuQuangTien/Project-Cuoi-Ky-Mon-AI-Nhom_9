@@ -61,7 +61,7 @@ def game_loop(snake, apple, events, state):
 
     snake.draw()
     apple.draw()
-    draw_solution_path(screen, solution, tile_size)
+    #draw_solution_path(screen, solution, tile_size)
 
     if(state == "PLAY"):
         key = pygame.key.get_pressed()
