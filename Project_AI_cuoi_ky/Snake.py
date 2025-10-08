@@ -69,6 +69,12 @@ class Snake:
                          Vector2(5, 12), Vector2(6, 12), Vector2(7, 12), Vector2(8, 12), Vector2(9, 12),
                          Vector2(14, 12), Vector2(15, 12), Vector2(16, 12), Vector2(17, 12), Vector2(18, 12),
                          Vector2(20, 5), Vector2(20, 6), Vector2(20, 7), Vector2(20, 8), Vector2(20, 9)]
+        self.wall_pos_set = {(5, 2), (6, 2), (7, 2), (8, 2), (9, 2),
+                         (14, 2), (15, 2), (16, 2), (17, 2), (18, 2),
+                         (3, 5), (3, 6), (3, 7), (3, 8), (3, 9),
+                         (5, 12), (6, 12), (7, 12), (8, 12), (9, 12),
+                         (14, 12), (15, 12), (16, 12), (17, 12), (18, 12),
+                         (20, 5), (20, 6), (20, 7), (20, 8), (20, 9)}
 
         self.high_dangerzone = [(c, r) for r in range(self.screen_rows) for c in range(self.screen_cols)
                                 if ((r == 0 or r == (self.screen_rows - 1)) or (c == 0 or c == (self.screen_cols - 1)))]
@@ -84,7 +90,7 @@ class Snake:
 
         self.low_dangerzone = [(x, y) for x in range(8, 16) for y in range(5, 10)]
 
-        self.verylow_dangerzone = list({(x, y) for x in range(24) for y in range(15)} - {(w.x, w.y) for w in self.wall_pos} -
+        self.verylow_dangerzone = list({(x, y) for x in range(24) for y in range(15)} - self.wall_pos_set -
                                        set(self.high_dangerzone) - set(self.med_dangerzone) - set(self.low_dangerzone))
 
 

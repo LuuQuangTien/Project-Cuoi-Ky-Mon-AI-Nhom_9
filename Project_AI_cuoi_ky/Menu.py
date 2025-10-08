@@ -1,6 +1,6 @@
 import pygame
 from Button import Button
-from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, BACKTRACKING
+from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE, BACKTRACKING
 from collections import deque
 
 #__________________________Game definition___________________________
@@ -12,9 +12,9 @@ GREEN = (173, 204, 96)
 RED = (253, 145, 145)
 LIGHT_BLUE = (173, 216, 230)
 LIGHT_GRAY = (211,211,211)
-HIGHDANGER_RED = (197, 21, 21, 100)
-MEDDANGER_ORANGE = (209, 110, 1, 100)
-LOWDANGER_GREEN = (67, 143, 78, 100)
+HIGHDANGER_RED = (197, 21, 21, 60)
+MEDDANGER_ORANGE = (209, 110, 1, 60)
+LOWDANGER_GREEN = (67, 143, 78, 60)
 
 #Button
 button_x = 475
@@ -32,8 +32,8 @@ ALGORITHMS = {
     "GREEDY": "GREEDY",
     "BEAM": "BEAM",
     "SIM A": "SIMULATED_ANEALING",
-    "NON DETR": "NONDETERMINISTIC",
-    "PAR OBS": "PARTIALLY_OBSERVABLE",
+    "SEN_LESS": "SENSORLESS",
+    "PAR_OBS": "PARTIALLY_OBSERVABLE",
     "BACK": "BACKTRACKING",
     "AC3": "AC3",
 }
@@ -42,7 +42,7 @@ METHOD_LAYOUT = [
     ["BFS", "DFS"],
     ["UCS", "GREEDY"],
     ["BEAM", "SIM A"],
-    ["NON DETR", "PAR OBS"],
+    ["SEN_LESS", "PAR_OBS"],
     ["BACK", "AC3"]
 ]
 
@@ -176,6 +176,18 @@ class Menu():
                 if not(solution):
                     beam_tail = BEAM(snake, snake.snake[-1], 5)
                     solution = beam_tail.Solving()
+            case("SENSORLESS"):
+                sensorless = SENSORLESS(snake, apple.position, grid_size = self.screen_rows * self.screen_cols)
+                solution = sensorless.Solving()
+                if not(solution):
+                    sensorless_tail = SENSORLESS(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
+                    solution = sensorless_tail.Solving()
+            case("PARTIALLY_OBSERVABLE"):
+                pa_ob = PARTIALLY_OBSERVABLE(snake, apple.position, grid_size = self.screen_rows * self.screen_cols)
+                solution = pa_ob.Solving()
+                if not(solution):
+                    pa_ob_tail = PARTIALLY_OBSERVABLE(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
+                    solution = pa_ob_tail.Solving()
             case ("BACKTRACKING"):
                 back = BACKTRACKING(snake, apple.position)
                 solution = back.Solving()
