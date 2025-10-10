@@ -12,6 +12,7 @@ class BFS():
         if(start == None): self.start = self.snake.snake[0]
         else: self.start = start
         self.goal = goal
+        self.state_num = 0
 
     def Solving(self):
         queue = deque([self.start])
@@ -19,6 +20,7 @@ class BFS():
 
         while(queue):
             state = queue.popleft()
+            self.state_num += 1
             if(state == self.goal):
                 goal_path = deque()
                 while state is not None:
@@ -38,6 +40,7 @@ class DFS():
         self.snake = snake
         self.start = self.snake.snake[0]
         self.goal = goal
+        self.state_num = 0
 
     def Solving(self):
         queue = deque([self.start])
@@ -45,6 +48,7 @@ class DFS():
 
         while (queue):
             state = queue.pop()
+            self.state_num += 1
             if(state == self.goal):
                 goal_path = deque()
                 while state is not None:
@@ -260,7 +264,6 @@ class BEAM:
             queue = next_queue
         return None
 
-
 class SIMULATED_ANEALING:
     def __init__(self, snake, goal, T, alpha):
         self.snake = snake
@@ -455,7 +458,6 @@ class SENSORLESS:
 
         return action_path
 
-
 class PARTIALLY_OBSERVABLE:
     def __init__(self, snake, goal, grid_size):
         self.snake = snake
@@ -528,10 +530,6 @@ class PARTIALLY_OBSERVABLE:
                     heapq.heappush(queue, (heuristic, substate))
                     path[substate] = state
 
-
-class FORWARD_CHECKING:
-    def __init__(self):
-        pass
 class BACKTRACKING:
     def __init__(self, snake, goal):
         self.snake = snake
@@ -539,10 +537,10 @@ class BACKTRACKING:
         self.goal = goal
         self.wall_set = {tuple(pos) for pos in self.snake.wall_pos}
         self.snake_body_set = {tuple(pos) for pos in self.snake.snake[:-1]}
-        self.visit_limit = 5000
+        self.visit_limit = 10000
         self.nodes_visited = 0
 
-    def solve(self):
+    def Solving(self):
         path = deque()
         visited = {tuple(self.start)}
         if self._solve_util(self.start, path, visited):
@@ -578,9 +576,12 @@ class BACKTRACKING:
             visited.remove(next_pos_tuple)
         return False
 
-    def Solving(self):
-        return self.solve()
-
 class AC_3:
-    def __init__(self):
-        pass
+    def __init__(self, snake, goal):
+        self.snake = snake
+        self.start = self.snake.snake[0]
+        self.goal = goal
+        self.wall_set = {tuple(pos) for pos in self.snake.wall_pos}
+        self.snake_body_set = {tuple(pos) for pos in self.snake.snake[:-1]}
+        self.visit_limit = 5000
+        self.nodes_visited = 0

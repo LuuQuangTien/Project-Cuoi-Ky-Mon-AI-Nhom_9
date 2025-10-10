@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 sprite_sheet = pygame.image.load("img/snake_img.png").convert_alpha()
 """font = pygame.font.Font(None, 50)"""
 SNAKE_MOVE = pygame.USEREVENT + 1
-pygame.time.set_timer(SNAKE_MOVE, 150)
+pygame.time.set_timer(SNAKE_MOVE, 50)
 state = "MENU"
 gameover_screen = None
 solution = None
@@ -34,6 +34,7 @@ running = True
 menu = Menu(screen, tile_size, sprite_sheet)
 snake = Snake(screen, tile_size, sprite_sheet)
 apple = Apple(screen, tile_size, sprite_sheet, snake)
+apple.reset_position()
 
 #________________________________Game Loop____________________________
 
@@ -46,7 +47,7 @@ def menu_state(menu, state, events):
     elif state == "COMPUTER":
         menu.draw_computer()
 
-    inp = menu.input(state, events)
+    inp = menu.input(state, events, apple)
     if inp == "QUIT":
         running = False
     elif inp in ["MENU", "PLAY", "COMPUTER", "SIMULATE"]:
@@ -125,7 +126,7 @@ while(running):
         state = menu_state(menu, state, events)
         if(state in ["PLAY", "SIMULATE"]):
             snake.reset()
-            apple.set_apple_random()
+            apple.reset_position(menu.mode)
     elif(state in ["PLAY", "SIMULATE"]):
         state = game_loop(snake, apple, events, state)
 
