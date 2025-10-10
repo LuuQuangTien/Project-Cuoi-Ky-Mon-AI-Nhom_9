@@ -1,7 +1,8 @@
 import pygame
 from Button import Button
-from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE, BACKTRACKING
-from collections import deque
+from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE, BACKTRACKING, AC_3
+from openpyxl import load_workbook
+from openpyxl.styles import numbers
 
 #__________________________Game definition___________________________
 
@@ -35,7 +36,7 @@ ALGORITHMS = {
     "SEN_LESS": "SENSORLESS",
     "PAR_OBS": "PARTIALLY_OBSERVABLE",
     "BACK": "BACKTRACKING",
-    "AC3": "AC3",
+    "AC_3": "AC_3",
 }
 
 METHOD_LAYOUT = [
@@ -43,9 +44,10 @@ METHOD_LAYOUT = [
     ["UCS", "GREEDY"],
     ["BEAM", "SIM A"],
     ["SEN_LESS", "PAR_OBS"],
-    ["BACK", "AC3"]
+    ["BACK", "AC_3"]
 ]
 
+file = "Stats.xlsx"
 
 #_____________________________Game Class_____________________________
 class Menu():
@@ -75,6 +77,7 @@ class Menu():
         self.rect_return = Button(self.screen, self.font, (self.screen_with - (50 + button_width)),
                                   (self.screen_height - (50 + button_height)), button_width, button_height, "RETURN", GREEN, BLACK)
         self.rect_startplaying = Button(self.screen, self.font, 50, self.screen_height - (50 + button_height), button_width, button_height, "START", RED, BLACK)
+        self.rect_static_apple = Button(self.screen, self.font, (self.screen_with - (50 + button_width)*2), (self.screen_height - (50 + button_height)), button_width, button_height, "Test", GREEN, BLACK)
 
         for col_i, col in enumerate(METHOD_LAYOUT):
             x = 20 + col_i * (algorithm_button_width + button_gap + 20)
@@ -110,7 +113,6 @@ class Menu():
         sprite = pygame.transform.smoothscale(sprite, (self.tile_size, self.tile_size))
         return sprite
 
-
     def draw_start(self):
         pygame.display.set_caption("Start Menu")
         background = pygame.Surface((self.screen_with, self.screen_height))
@@ -133,6 +135,49 @@ class Menu():
         background.fill(LIGHT_GRAY, pygame.Rect(0, self.screen_height // 2, self.screen_with, self.screen_height // 2))
         self.screen.blit(background, (0, 0))
 
+    def reset_sheet(self, file, sheet):
+        wb = load_workbook(file)
+        current_sheet = None
+        sheet_index = None
+        header_row = 2
+        headers = ["Apple", "Pos", "Eaten", "States", "Solution Path"]
+
+        if (sheet in wb.sheetnames):
+            current_sheet = wb[sheet]
+            sheet_index = wb.worksheets.index(current_sheet)
+            wb.remove(current_sheet)
+        if (sheet_index is not None): sh = wb.create_sheet(sheet, index=sheet_index)
+        else: sh = wb.create_sheet(sheet)
+        for header_col, header in enumerate(headers, start=1):
+            sh.cell(row=header_row, column=header_col).value = header
+
+        wb.save(file)
+
+    def log_stats(self, file, sheet, apple, eaten, state_num, solution):
+        wb = load_workbook(file)
+        sh = wb[sheet]
+        data_row = 3
+        summary_row = 12
+
+        while sh.cell(row=data_row, column=1).value is not None: data_row += 1
+        apple_idx = apple.static_pos_index
+        if(apple_idx < 0): apple_idx = 0
+        apple_pos_vector2 = apple.static_pos[apple_idx]
+        apple_pos = f"({int(apple_pos_vector2.x), int(apple_pos_vector2.y)})"
+
+        test_stats = [apple_idx + 1, apple_pos, eaten, state_num, solution]
+        for col, val in enumerate(test_stats, start=1):
+            sh.cell(row = data_row, column = col, value = val)
+
+        data_end_row = data_row
+        range_to_average = f'D3:D{data_end_row - 1}'
+        average = f'=AVERAGE({range_to_average})'
+        sh.cell(row=summary_row, column=1, value="Average explored states:")
+        avg_cell = sh.cell(row=summary_row, column=4, value=average)
+        avg_cell.number_format = numbers.FORMAT_NUMBER_00
+
+        wb.save(file)
+
     def use_method(self, method, select):
         if(method == select): return None
         else: return select
@@ -143,13 +188,21 @@ class Menu():
             case("BFS"):
                 bfs = BFS(snake, apple.position)
                 solution = bfs.Solving()
-                if not(solution):
+                if(solution):
+                    if(self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "BFS", apple, True, bfs.state_num, solution_str)
+                else:
                     bfs_tail = BFS(snake, snake.snake[-1])
                     solution = bfs_tail.Solving()
             case("DFS"):
                 dfs = DFS(snake, apple.position)
                 solution = dfs.Solving()
-                if not(solution):
+                if (solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "DFS", apple, True, dfs.state_num, solution_str)
+                else:
                     dfs_tail = DFS(snake, snake.snake[-1])
                     solution = dfs_tail.Solving()
             case("UCS"):
@@ -194,6 +247,9 @@ class Menu():
                 if not (solution):
                     back_tail = BACKTRACKING(snake, snake.snake[-1])
                     solution = back_tail.Solving()
+            case("AC_3"):
+                '''ac = AC_3(snake, apple.position)
+                solution = ac.Solving()'''
 
         if(solution and len(solution) > 1):
             solution.popleft()
@@ -219,7 +275,7 @@ class Menu():
                     zone.fill(color)
                     self.screen.blit(zone, rect.topleft)
 
-    def input(self, state, events):
+    def input(self, state, events, apple):
         for event in events:
             if(event.type == pygame.QUIT):
                 return "QUIT"
@@ -252,11 +308,14 @@ class Menu():
             if (self.rect_startplaying.draw(events, "normal")):
                 if(self.method is not None):
                     print("clicked STARTPLAY")
+                    if(self.mode == "STATIC_APPLE"): self.reset_sheet(file, self.method)
                     state = "SIMULATE"
             elif (self.rect_return.draw(events, "normal")):
                 print("clicked RETURN")
                 state = "MENU"
-            """elif(self.rect_visualize_path.draw(events, "press")):
-                self.mode = self.use_method(self.mode, "VISUALIZE")"""
+            elif(self.rect_static_apple.draw(events, "press")):
+                if(self.method is not None): self.mode = "STATIC_APPLE"
+
+                apple.reset_position("STATIC_APPLE")
         return state
         
