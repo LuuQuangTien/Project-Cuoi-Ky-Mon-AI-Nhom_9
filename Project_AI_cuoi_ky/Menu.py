@@ -2,7 +2,7 @@ import pygame
 from Button import Button
 from Pathfinding import BFS, DFS, UCS, Greedy, SIMULATED_ANEALING, BEAM, SENSORLESS, PARTIALLY_OBSERVABLE, BACKTRACKING, AC_3
 from openpyxl import load_workbook
-from openpyxl.styles import numbers
+from openpyxl.styles import numbers, Alignment
 
 #__________________________Game definition___________________________
 
@@ -47,6 +47,19 @@ METHOD_LAYOUT = [
     ["BACK", "AC_3"]
 ]
 
+ALGORITHMS_SHEETS = {
+    "BFS": "BFS",
+    "DFS": "DFS",
+    "UCS": "UCS",
+    "GREEDY": "Greedy",
+    "BEAM": "Beam",
+    "SIMULATED_ANEALING": "Simulated_Annealing",
+    "SENSORLESS": "Sensorless",
+    "PARTIALLY_OBSERVABLE": "Partially_Observable",
+    "BACKTRACKING": "Backtracking",
+    "AC_3": "AC_3",
+}
+
 file = "Stats.xlsx"
 
 #_____________________________Game Class_____________________________
@@ -62,6 +75,7 @@ class Menu():
         self.grass_sprite = self.get_sprite(3, 0, "img/Grass_img.png")
         self.stone_sprite = self.get_sprite(0, 1, "img/Stone_img.png")
         self.method = None
+        self.method_sheet = None
         self.algorithm_buttons = {}
         self.mode = None
         self.current_solver = None
@@ -142,11 +156,11 @@ class Menu():
         header_row = 2
         headers = ["Apple", "Pos", "Eaten", "States", "Solution Path"]
 
-        if (sheet in wb.sheetnames):
+        if(sheet in wb.sheetnames):
             current_sheet = wb[sheet]
             sheet_index = wb.worksheets.index(current_sheet)
             wb.remove(current_sheet)
-        if (sheet_index is not None): sh = wb.create_sheet(sheet, index=sheet_index)
+        if(sheet_index is not None): sh = wb.create_sheet(sheet, index=sheet_index)
         else: sh = wb.create_sheet(sheet)
         for header_col, header in enumerate(headers, start=1):
             sh.cell(row=header_row, column=header_col).value = header
@@ -157,7 +171,7 @@ class Menu():
         wb = load_workbook(file)
         sh = wb[sheet]
         data_row = 3
-        summary_row = 12
+        summary_row = len(apple.static_pos) + 5
 
         while sh.cell(row=data_row, column=1).value is not None: data_row += 1
         apple_idx = apple.static_pos_index
@@ -167,11 +181,15 @@ class Menu():
 
         test_stats = [apple_idx + 1, apple_pos, eaten, state_num, solution]
         for col, val in enumerate(test_stats, start=1):
-            sh.cell(row = data_row, column = col, value = val)
+            C = sh.cell(row = data_row, column = col, value = val)
+            if(col == 5): C.alignment = Alignment(vertical='center', wrapText=True)
+            else: C.alignment = Alignment(horizontal='center', vertical='center')
+        sh.column_dimensions['E'].width = 50
 
         data_end_row = data_row
+        range_to_eaten = f'C3:C{data_end_row - 1}'
         range_to_average = f'D3:D{data_end_row - 1}'
-        average = f'=AVERAGE({range_to_average})'
+        average = f'=SUM({range_to_average}) / COUNTIF({range_to_eaten}, True)'
         sh.cell(row=summary_row, column=1, value="Average explored states:")
         avg_cell = sh.cell(row=summary_row, column=4, value=average)
         avg_cell.number_format = numbers.FORMAT_NUMBER_00
@@ -198,7 +216,7 @@ class Menu():
             case("DFS"):
                 dfs = DFS(snake, apple.position)
                 solution = dfs.Solving()
-                if (solution):
+                if(solution):
                     if (self.mode == "STATIC_APPLE"):
                         solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
                         self.log_stats(file, "DFS", apple, True, dfs.state_num, solution_str)
@@ -208,48 +226,77 @@ class Menu():
             case("UCS"):
                 ucs = UCS(self.screen, self.tile_size, snake, apple.position)
                 solution = ucs.Solving()
-                if not(solution):
+                if(solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "UCS", apple, True, ucs.state_num, solution_str)
+                else:
                     ucs_tail = UCS(self.screen, self.tile_size, snake, snake.snake[-1])
                     solution = ucs_tail.Solving()
             case("GREEDY"):
                 greedy = Greedy(snake, apple.position)
                 solution = greedy.Solving()
-                if not(solution):
+                if (solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "Greedy", apple, True, greedy.state_num, solution_str)
+                else:
                     greedy_tail = Greedy(snake, snake.snake[-1])
                     solution = greedy_tail.Solving()
             case("SIMULATED_ANEALING"):
                 sa = SIMULATED_ANEALING(snake, apple.position, T = 1000, alpha = 0.9)
                 solution = sa.Solving()
-                if not(solution):
+                if (solution):
+                    apple_eaten = (solution[-1].x == apple.position.x and
+                                   solution[-1].y == apple.position.y)
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "Simulated_Annealing", apple, apple_eaten, sa.state_num, solution_str)
+                else:
                     sa_tail = SIMULATED_ANEALING(snake, snake.snake[-1], T = 1000, alpha = 0.9)
                     solution = sa_tail.Solving()
             case("BEAM"):
                 beam = BEAM(snake, apple.position, 3)
                 solution = beam.Solving()
-                if not(solution):
+                if (solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "Beam", apple, True, beam.state_num, solution_str)
+                else:
                     beam_tail = BEAM(snake, snake.snake[-1], 5)
                     solution = beam_tail.Solving()
             case("SENSORLESS"):
-                sensorless = SENSORLESS(snake, apple.position, grid_size = self.screen_rows * self.screen_cols)
+                sensorless = SENSORLESS(snake, apple.position)
                 solution = sensorless.Solving()
                 if not(solution):
-                    sensorless_tail = SENSORLESS(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
+                    sensorless_tail = SENSORLESS(snake, snake.snake[-1])
                     solution = sensorless_tail.Solving()
             case("PARTIALLY_OBSERVABLE"):
                 pa_ob = PARTIALLY_OBSERVABLE(snake, apple.position, grid_size = self.screen_rows * self.screen_cols)
                 solution = pa_ob.Solving()
-                if not(solution):
+                if (solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "Partially_Observable", apple, True, pa_ob.state_num, solution_str)
+                else:
                     pa_ob_tail = PARTIALLY_OBSERVABLE(snake, snake.snake[-1], grid_size = self.screen_rows * self.screen_cols)
                     solution = pa_ob_tail.Solving()
             case ("BACKTRACKING"):
                 back = BACKTRACKING(snake, apple.position)
                 solution = back.Solving()
-                if not (solution):
+                if (solution):
+                    if (self.mode == "STATIC_APPLE"):
+                        solution_str = " -> ".join([f"({int(v.x)}, {int(v.y)})" for v in solution])
+                        self.log_stats(file, "Backtracking", apple, True, back.nodes_visited, solution_str)
+                else:
                     back_tail = BACKTRACKING(snake, snake.snake[-1])
                     solution = back_tail.Solving()
             case("AC_3"):
-                '''ac = AC_3(snake, apple.position)
-                solution = ac.Solving()'''
+                ac = AC_3(snake, apple.position)
+                solution = ac.Solving()
+                if not (solution):
+                    ac_tail = AC_3(snake, snake.snake[-1])
+                    solution = ac_tail.Solving()
 
         if(solution and len(solution) > 1):
             solution.popleft()
@@ -305,10 +352,11 @@ class Menu():
                             other_button.clicked = False
                     button.clicked = True
                     self.method = method_name
+                    self.method_sheet = ALGORITHMS_SHEETS[self.method]
             if (self.rect_startplaying.draw(events, "normal")):
                 if(self.method is not None):
                     print("clicked STARTPLAY")
-                    if(self.mode == "STATIC_APPLE"): self.reset_sheet(file, self.method)
+                    if(self.mode == "STATIC_APPLE"): self.reset_sheet(file, self.method_sheet)
                     state = "SIMULATE"
             elif (self.rect_return.draw(events, "normal")):
                 print("clicked RETURN")

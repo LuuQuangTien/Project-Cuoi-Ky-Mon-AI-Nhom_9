@@ -43,7 +43,7 @@ class Apple:
                 self.static_pos_index += 1
                 if (self.static_pos_index < len(self.static_pos)):
                     self.position = self.static_pos[self.static_pos_index]
-                else: return None
+                else: return "GAMEOVER"
             else: self.set_apple_random()
 
             if(menu): return menu.select_method(self.snake, self)

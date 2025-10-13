@@ -3,7 +3,7 @@ import numpy as np
 from pygame import Vector2
 from collections import deque
 import heapq
-import time
+import pygame
 from Sensorless import SensorlessBoard
 
 class BFS():
@@ -71,6 +71,7 @@ class UCS():
         self.snake = snake
         self.start = self.snake.snake[0]
         self.goal = goal
+        self.state_num = 0
 
     def Solving(self):
         start_state = (int(self.start.x), int(self.start.y))
@@ -80,6 +81,7 @@ class UCS():
         while(queue):
             cost, state = heapq.heappop(queue)
             state_Vector2 = Vector2(*state)
+            self.state_num += 1
             if(state_Vector2 == self.goal):
                 goal_path = deque()
                 while state is not None:
@@ -114,6 +116,7 @@ class Greedy():
         self.start = self.snake.snake[0]
         self.goal = goal
         self.penalty = 50
+        self.state_num = 0
 
     def Heuristic_calc(self, snake, head, tail, h_map, P):
         floodfill_h = h_map.get(head, P)
@@ -126,7 +129,9 @@ class Greedy():
     def Flood_fill(self, snake, goal, obstacles=None, limit=None):
         distance_map = {tuple(goal): 0}
         queue = deque([tuple(goal)])
-        if (obstacles is None): obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
+        if (obstacles is None):
+            obstacles = set()
+            obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
 
         while (queue):
             state = queue.popleft()
@@ -166,6 +171,7 @@ class Greedy():
         while(queue):
             cost, state = heapq.heappop(queue)
             state_Vector2 = Vector2(*state)
+            self.state_num += 1
             if(state_Vector2 == self.goal):
                 goal_path = deque()
                 while state is not None:
@@ -187,6 +193,7 @@ class BEAM:
         self.goal = goal
         self.beam_width = K
         self.penalty = 50
+        self.state_num = 0
 
     def Heuristic_calc(self, snake, head, tail, h_map, P):
         floodfill_h = h_map.get(head, P)
@@ -199,7 +206,9 @@ class BEAM:
     def Flood_fill(self, snake, goal, obstacles=None, limit=None):
         distance_map = {tuple(goal): 0}
         queue = deque([tuple(goal)])
-        if(obstacles is None): obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
+        if(obstacles is None):
+            obstacles = set()
+            obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
 
         while(queue):
             state = queue.popleft()
@@ -243,6 +252,7 @@ class BEAM:
             while(queue):
                 cost, state = heapq.heappop(queue)
                 state_Vector2 = Vector2(*state)
+                self.state_num += 1
                 if(state_Vector2 == self.goal):
                     goal_path = deque()
                     while state is not None:
@@ -272,6 +282,7 @@ class SIMULATED_ANEALING:
         self.Max_temp = T
         self.alpha = alpha
         self.penalty = 50
+        self.state_num = 0
 
     def Heuristic_calc(self, snake, head, tail, h_map, P):
         floodfill_h = h_map.get(head, P)
@@ -284,7 +295,9 @@ class SIMULATED_ANEALING:
     def Flood_fill(self, snake, goal, obstacles = None, limit = None):
         distance_map = {tuple(goal): 0}
         queue = deque([tuple(goal)])
-        if(obstacles is None): obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
+        if (obstacles is None):
+            obstacles = set()
+            obstacles.update((seg.x, seg.y) for seg in self.snake.snake)
 
         while(queue):
             state = queue.popleft()
@@ -325,6 +338,8 @@ class SIMULATED_ANEALING:
 
         while(T > 1):
             next_possible_state = self.Next_state(self.snake, start_state)
+            self.state_num += 1
+
             if not(next_possible_state): break
             next_state = random.choice(next_possible_state)
             next_h = self.Heuristic_calc(self.snake, next_state, tail_tuple, flood_fill, 200)
@@ -342,9 +357,14 @@ class SIMULATED_ANEALING:
                 best_state = next_state
             T *= self.alpha
 
-        bfs = BFS(self.snake, self.goal, start = Vector2(*best_state))
-        goal_path = bfs.Solving()
-        return goal_path
+        bfs_A = BFS(self.snake, Vector2(*best_state), start=self.start)
+        goal_A = bfs_A.Solving()
+
+        bfs_B = BFS(self.snake, self.goal, start = self.start)
+        goal_B = bfs_B.Solving()
+
+        if(goal_A and len(goal_A) > 1): return goal_A
+        return goal_B
 
     def Next_state(self, snake, state):
         next_pos = []
@@ -363,10 +383,17 @@ class SIMULATED_ANEALING:
         return next_pos
 
 class SENSORLESS:
-    def __init__(self, snake, goal, grid_size):
+    def __init__(self, snake, goal, mode = None):
         self.snake = snake
         self.goal = goal
-        self.grid_size = grid_size
+        self.mode = mode
+
+    class Belief_Node:
+        def __init__(self, snake_body, belief, path):
+            self.snake_body = snake_body
+            self.belief = belief
+            self.path = path
+
 
     def Initial_belief_state(self):
         safe_cells = set()
@@ -379,17 +406,6 @@ class SENSORLESS:
                 if cell not in obstacles:
                     safe_cells.add(cell)
         return safe_cells
-
-    def Belief_heuristic(self, belief_set, flood_fill):
-        if not belief_set:
-            return float('inf')
-        total_ff_cost = 0
-        for state in belief_set:
-            total_ff_cost += flood_fill.get(state, self.grid_size)
-
-        avg_ff_cost = total_ff_cost / len(belief_set)
-        uncertainty_penalty = len(belief_set)
-        return (uncertainty_penalty * self.grid_size) + avg_ff_cost
 
     def Simulate_snake_move(self, snake_list, action_vector):
         if not snake_list: return []
@@ -419,44 +435,36 @@ class SENSORLESS:
 
     def Solving(self):
         initial_belief = self.Initial_belief_state()
-        initial_body = self.snake.snake
+        initial_body = self.snake.snake.copy()
         goal_pos = (self.goal.x, self.goal.y)
-        greedy = Greedy(self.snake, self.goal)
-        flood_fill = greedy.Flood_fill(self.snake, goal_pos, self.snake.wall_pos_set)
+        start_node = self.Belief_Node(initial_body, initial_belief, [])
+        queue = deque([start_node])
+        visited = {frozenset(initial_belief)}
+        expanded = 0
 
-        initial_h = self.Belief_heuristic(initial_belief, flood_fill)
-        queue = [(initial_h, frozenset(initial_belief), None, None, initial_body)]
-        path_tracking = {frozenset(initial_belief): (None, None, initial_body)}
+        while(queue):
+            node = queue.popleft()
+            expanded += 1
+            if expanded % 100 == 0:
+                print(f"Expanded {expanded} nodes, belief size={len(node.belief)}")
 
-        while queue:
-            h_cost, current_frozenset, _, _, current_snake_body = heapq.heappop(queue)
-            current_belief = set(current_frozenset)
-
-            if current_belief == {goal_pos}: return self._reconstruct_action_path(path_tracking, current_frozenset)
+            if(self.mode == "STATIC_APPLE"):
+                if(all(pos == (self.goal.x, self.goal.y) for pos in node.belief)):
+                    return deque(node.path)
+            else:
+                if(len(node.belief) == 1 and goal_pos in node.belief):
+                    return deque(node.path)
 
             for d in self.snake.direction:
-                next_belief, next_snake_body = self.Apply_move_belief(current_belief, d, current_snake_body)
+                next_belief, next_body = self.Apply_move_belief(node.belief, d, node.snake_body)
+                if not(next_belief): continue
 
-                if not next_belief: continue
-                next_frozenset = frozenset(next_belief)
+                belief_key = frozenset(next_belief)
+                if(belief_key not in visited):
+                    visited.add(belief_key)
+                    queue.append(self.Belief_Node(next_body, next_belief, node.path + [next_body[0]]))
 
-                if next_frozenset not in path_tracking:
-                    next_h = self.Belief_heuristic(next_belief, flood_fill)
-                    heapq.heappush(queue, (next_h, next_frozenset, current_frozenset, d, next_snake_body))
-                    path_tracking[next_frozenset] = (current_frozenset, d, current_snake_body)
-
-        return None  # No path of Belief States found
-
-    def _reconstruct_action_path(self, path_tracking, final_frozenset):
-        action_path = deque()
-        current_frozenset = final_frozenset
-
-        while path_tracking.get(current_frozenset) and path_tracking[current_frozenset][0] is not None:
-            parent_frozenset, action_vector, _ = path_tracking[current_frozenset]
-            action_path.appendleft(action_vector)
-            current_frozenset = parent_frozenset
-
-        return action_path
+        return None
 
 class PARTIALLY_OBSERVABLE:
     def __init__(self, snake, goal, grid_size):
@@ -465,6 +473,7 @@ class PARTIALLY_OBSERVABLE:
         self.grid_size = grid_size
         self.penalty = 50
         self.rad = 5
+        self.state_num = 0
 
     def Initial_belief_state(self, obstacles):
         safe_cells = set()
@@ -513,6 +522,7 @@ class PARTIALLY_OBSERVABLE:
         while(queue):
             h, state = heapq.heappop(queue)
             stateVector2 = Vector2(state[0], state[1])
+            self.state_num += 1
             if (stateVector2 == self.goal):
                 goal_path = deque()
                 while state is not None:
@@ -583,5 +593,42 @@ class AC_3:
         self.goal = goal
         self.wall_set = {tuple(pos) for pos in self.snake.wall_pos}
         self.snake_body_set = {tuple(pos) for pos in self.snake.snake[:-1]}
-        self.visit_limit = 5000
+        self.visit_limit = 10000
         self.nodes_visited = 0
+
+    def Solving(self):
+        path = deque()
+        visited = {tuple(self.start)}
+        if self._solve_util(self.start, path, visited):
+            path.appendleft(self.start)
+            return path
+        print(f"Backtracking stopped. Visited {self.nodes_visited} nodes.")
+        return None
+
+    def _solve_util(self, current_pos, path, visited):
+        self.nodes_visited += 1
+        if self.nodes_visited > self.visit_limit:
+            return False
+        if current_pos == self.goal:
+            return True
+        directions = sorted(
+            self.snake.direction,
+            key=lambda d: (current_pos.x + d.x - self.goal.x) ** 2 + (current_pos.y + d.y - self.goal.y) ** 2
+        )
+        for direction in directions:
+            next_pos = current_pos + direction
+            next_pos_tuple = tuple(next_pos)
+            if not (0 <= next_pos.x < self.snake.screen_cols and 0 <= next_pos.y < self.snake.screen_rows):
+                continue
+            if next_pos_tuple in self.wall_set or next_pos_tuple in self.snake_body_set:
+                continue
+            if next_pos_tuple in visited:
+                continue
+            visited.add(next_pos_tuple)
+            path.append(next_pos)
+
+            if self._solve_util(next_pos, path, visited):
+                return True
+            path.pop()
+            visited.remove(next_pos_tuple)
+        return False

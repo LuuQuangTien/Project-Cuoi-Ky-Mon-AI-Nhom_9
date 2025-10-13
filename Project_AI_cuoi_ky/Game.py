@@ -107,7 +107,10 @@ def game_loop(snake, apple, events, state):
         gameover_screen = screen.copy()
 
     new_solution = apple.apple_collision(menu if state == "SIMULATE" else None)
-    if(new_solution is not None): solution = new_solution
+    if(new_solution == "GAMEOVER"):
+        state = "GAMEOVER"
+        gameover_screen = screen.copy()
+    elif(new_solution is not None): solution = new_solution
     return state
 
 def draw_solution_path(screen, solution, tile_size):
