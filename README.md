@@ -10,8 +10,8 @@ Bài Project cuối kỳ thực hiện xây dựng game Snakes! bằng ngôn ng�
 ## **Mục lục**
 Trong phần giới thiệu của Project, chúng em sẽ nói qua về những chủ đề sau:
 - [Thư viện](#Thư-viện)
-- [Giới thiệu game](#Giới-thiệu-game-Snakes!)
-- [Lý thuyết, nguyên lý thuật toán](#Lý-thuyết,-nguyên-lý-cơ-bản-của-thuật-toán.)
+- [Giới thiệu game Snakes!](#Giới-thiệu-game-Snakes!)
+- [Lý thuyết, nguyên lý cơ bản của thuật toán](#Lý-thuyết,-nguyên-lý-cơ-bản-của-thuật-toán.)
 - [Demo các thuật toán](#demo-các-thuật-toán)
 - [Ưu điểm, nhược điểm](#ưu-điểm-nhược-điểm)
 - [Kết luận](#kết-luận)
@@ -80,10 +80,10 @@ Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) đ
 ## *Demo các thuật toán*
 
 ### BFS
-
+![Demo BFS]((assets/BFS_demo.gif))
 
 ### DFS
-
+![Demo DFS]((assets/DFS_demo.gif))
 
 ### UCS
 
