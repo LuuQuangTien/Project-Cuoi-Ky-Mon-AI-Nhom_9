@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 sprite_sheet = pygame.image.load("img/snake_img.png").convert_alpha()
 """font = pygame.font.Font(None, 50)"""
 SNAKE_MOVE = pygame.USEREVENT + 1
-pygame.time.set_timer(SNAKE_MOVE, 50)
+pygame.time.set_timer(SNAKE_MOVE, 100)
 state = "MENU"
 gameover_screen = None
 solution = None
