@@ -98,10 +98,10 @@ Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) đ
 ![SimA_demo](asset/SimA_demo.gif)
 
 ### Không gian nhìn thấy một phần
-
+![PO_demo](asset/PO_demo.gif)
 
 ### Backtracking
-
+![Backtrack_demo](asset/Backtrack_demo.gif)
 
 ## *Ưu điểm, nhược điểm*
 ## **Kết luận**
