@@ -30,7 +30,52 @@ Luật chơi của Snakes! rất đơn giản. Người chơi điều khiển co
 
 ### BFS
 Thuật toán quét cạn bắt đầu từ đầu con rắn đến quả táo. Con rắn sẽ quét cạn bắt đầu từng lớp, kiểm tra đã đến đích chưa, sau đó sinh ra các trạng thái (ô) con an toàn với hàm snake.Is_safe() rồi đưa vào hàng đợi nếu chưa được duyệt qua. Sau khi tìm kiếm được mục tiêu, thuật toán sẽ xây dựng lại đường đi từ quả táo đến đầu con rắn để dẫn đường cho nó di chuyển.
+Độ phức tạp trường hợp xấu nhất:
+- Không gian: 24 x 15 - 30 = 330
+- Thời gian: 24 x 15 - 30 = 330
 
+![BFS_pathfinding](asset/BFS.png)
+
+### DFS
+Thuật toán tìm kiếm theo chiều sâu bắt đầu từ đầu con rắn đến quả táo. Con rắn sẽ kiểm tra đã đến đích chưa, sau đó sinh ra các trạng thái (ô) con an toàn với hàm snake.Is_safe() rồi đưa vào hàng đợi nếu chưa được duyệt qua. Các ô con được duyệt qua theo FIFO (First in first out), khác với BFS quét cạn, DFS tìm kiếm theo nhánh sâu. Sau khi tìm kiếm được mục tiêu, thuật toán sẽ xây dựng lại đường đi từ quả táo đến đầu con rắn để dẫn đường cho nó di chuyển.
+Độ phức tạp trường hợp xấu nhất:
+- Không gian: 360
+- Thời gian: 360
+
+![DFS_pathfinding](asset/DFS.png)
+
+### UCS
+Giống với BFS, thuật toán UCS cũng sử dụng phương thức quét cạn. Nhưng UCS khác biệt ở việc kèm theo chi phí g(n) cho các trạng thái. Môi trường game được đặt những khu vực với các mức độ "nguy hiểm" (+0, +1, +2, +3) và từ đó quyết định được đường đi cuối dùng ngắn và an toàn nhất cho con rắn.
+Độ phức tạp trường hợp xấu nhất:
+- Không gian: 360
+- Thời gian: 360log(360)
+
+![UCS_pathfinding](asset/UCS.png)
+
+## Greedy
+Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) để tìm đường đi tốt nhất tại thời điểm đó và đi đến quả táo. Trong Project, heuristic được kết hợp giữa 3 hàm tính toán. Flood fill từ quả táo đến đầu con rắn, Flood fill từ đuôi con rắn đến đầu con rắn giúp rắn tránh việc tự kẹt mình (bằng cách đuổi theo đuôi) và Flood fill để phạt con rắn khi nó đi vào những vị trí hẹp có thể làm nó bị kẹt.
+Độ phức tạp trường hợp xấu nhất:
+- Không gian: 360
+- Thời gian: 360log(360)
+
+
+
+### Beam search
+
+
+### Simulated annealing
+
+
+### Không gian không nhìn thấy
+
+
+### Không gian nhìn thấy một phần
+
+
+### Backtracking
+
+
+### AC3
 
 ## *Demo các thuật toán*
 ## *Ưu điểm, nhược điểm*
