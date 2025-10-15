@@ -80,16 +80,16 @@ Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) đ
 ## *Demo các thuật toán*
 
 ### BFS
-![Demo BFS]((assets/BFS_demo.gif))
+![Demo BFS]((asset/BFS_demo.gif))
 
 ### DFS
-![Demo DFS]((assets/DFS_demo.gif))
+![Demo DFS]((asset/DFS_demo.gif))
 
 ### UCS
-
+![Demo UCS]((asset/UCS_demo.gif))
 
 ### Greedy
-
+![Demo Greedy]((asset/Greedy_demo.gif))
 
 ### Beam search
 
