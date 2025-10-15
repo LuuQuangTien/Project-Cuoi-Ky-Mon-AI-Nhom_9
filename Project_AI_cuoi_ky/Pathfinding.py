@@ -3,8 +3,6 @@ import numpy as np
 from pygame import Vector2
 from collections import deque
 import heapq
-import pygame
-from Sensorless import SensorlessBoard
 
 class BFS():
     def __init__(self, snake, goal, start = None):

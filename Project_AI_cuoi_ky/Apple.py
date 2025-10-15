@@ -7,8 +7,9 @@ class Apple:
         self.screen = screen
         self.tile_size = tile_size
         self.snake = snake
-        self.static_pos = [Vector2(10, 7), Vector2(4, 7), Vector2(16, 3), Vector2(18, 11),
-                           Vector2(12, 7), Vector2(22, 7), Vector2(1, 13)]
+        self.static_pos = [Vector2(12, 7), Vector2(1, 1), Vector2(11, 3), Vector2(22, 7),
+                            Vector2(4, 13), Vector2(19, 1), Vector2(5, 5), Vector2(12, 14),
+                            Vector2(14, 8), Vector2(22, 13)]
         self.static_pos_index = 0
         self.position = None
         self.sprite_sheet = sprite_sheet
