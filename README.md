@@ -78,5 +78,29 @@ Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) đ
 ### AC3
 
 ## *Demo các thuật toán*
+
+### BFS
+
+
+### DFS
+
+
+### UCS
+
+
+### Greedy
+
+
+### Beam search
+
+
+### Simulated annealing
+
+
+### Không gian nhìn thấy một phần
+
+
+### Backtracking
+
 ## *Ưu điểm, nhược điểm*
 ## **Kết luận**
