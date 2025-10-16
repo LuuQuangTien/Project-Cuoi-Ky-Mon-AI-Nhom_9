@@ -33,8 +33,8 @@ Luật chơi của Snakes! rất đơn giản. Người chơi điều khiển co
 ### BFS
 Thuật toán quét cạn bắt đầu từ đầu con rắn đến quả táo. Con rắn sẽ quét cạn bắt đầu từng lớp, kiểm tra đã đến đích chưa, sau đó sinh ra các trạng thái (ô) con an toàn với hàm snake.Is_safe() rồi đưa vào hàng đợi nếu chưa được duyệt qua. Sau khi tìm kiếm được mục tiêu, thuật toán sẽ xây dựng lại đường đi từ quả táo đến đầu con rắn để dẫn đường cho nó di chuyển.
 Độ phức tạp trường hợp xấu nhất:
-- Không gian: 24 x 15 - 30 = 330
-- Thời gian: 24 x 15 - 30 = 330
+- Không gian: 24 x 15 = 360
+- Thời gian: 24 x 15 = 360
 
 ![BFS_pathfinding](asset/BFS.png)
 
