@@ -244,5 +244,5 @@ Phương hướng cải thiện:
 -	Phát triển phiên bản mở rộng: tạo chế độ nhiều người chơi hoặc các AI đấu với nhau
 
 ## **Tài liệu tham khảo**
-[1] *PyGame Beginner Tutorial in Python - Adding Buttons*, Coding With Russ, https://www.youtube.com/watch?v=G8MYGDf_9ho
+[1] *PyGame Beginner Tutorial in Python - Adding Buttons*, Coding With Russ, https://www.youtube.com/watch?v=G8MYGDf_9ho \
 [2] *Snake Game in Python Tutorial with pygame(OOP)*, Programming With Nick, https://www.youtube.com/watch?v=1zVlRXd8f7g&t
