@@ -9,9 +9,9 @@ Bài Project cuối kỳ thực hiện xây dựng game Snakes! bằng ngôn ng�
 
 ## **Mục lục**
 Trong phần giới thiệu của Project, chúng em sẽ nói qua về những chủ đề sau:
-- [Thư viện](#Thư-viện)
-- [Giới thiệu game Snakes!](#Giới-thiệu-game-Snakes!)
-- [Lý thuyết, nguyên lý cơ bản của thuật toán](#Lý-thuyết,-nguyên-lý-cơ-bản-của-thuật-toán)
+- [Thư viện](#thư-viện)
+- [Giới thiệu game Snakes!](#giới-thiệu-game-Snakes)
+- [Lý thuyết, nguyên lý cơ bản của thuật toán](#lý-thuyết-nguyên-lý-cơ-bản-của-thuật-toán)
 - [Demo các thuật toán](#demo-các-thuật-toán)
 - [Ưu điểm, nhược điểm](#ưu-điểm-nhược-điểm)
 - [Kết luận](#kết-luận)
@@ -146,50 +146,76 @@ Thuật toán Backtracking là một thuật toán đơn giản, sử dụng đ�
 
 ### UCS
 * Ưu điểm:
-  -
+  - Dựa vào những vùng an toàn, con rắn có thể tìm được đường đi an toàn nhất, tránh bị mắc kẹt hoặc hết đường đi.
 * Nhược điểm:
-  -
+  - Tiêu hao tài nguyên bộ nhớ.
+  - Nếu chi phí các đường đi bằng nhau thì độ phức tạp về thời gian cao.
 
 ### Greedy
 * Ưu điểm:
-  -
+  - Tìm kiếm đường đi nhanh.
+  - Lựa chọn được những bước đi tốt nhất ở thời điểm hiện tại.
+  - Giảm thiểu không gian trạng thái cần phải duyệt, tiết kiệm thời gian.
 * Nhược điểm:
-  -
+  - Không đảm bảo tối ưu, rắn có thể bị mắc kẹt không tìm thấy đường đi tiếp theo.
+  - Để thuật toán có thể hiệu quả, cần phải thiết kể heuristic một cách hợp lý.
   
 ### Beam search
 * Ưu điểm:
-  -
+  - Giống Greedy, sử dụng heuristic để tìm đường đi.
+  - Tiết kiệm tài nguyên bộ nhớ hơn Greedy.
+  - Giảm thiểu không gian trạng thái cần phải duyệt, tiết kiệm thời gian.
 * Nhược điểm:
-  -
+  - Không đảm bảo tối ưu, rắn có thể bị mắc kẹt không tìm thấy đường đi tiếp theo.
+  - Để thuật toán có thể hiệu quả, cần phải thiết kể heuristic một cách hợp lý.
+  - Nếu độ rộng của beam quá nhỏ thì có thể không tìm thấy đường đi.
 
 ### Simulated annealing
 * Ưu điểm:
-  -
+  - Tìm kiếm đường đi nhanh.
+  - không gian trạng thái nhỏ.
+  - Khắc phục được vấn đề mắc kẹt của local search bằng cách chấp nhận những bước đi không tối ưu.
 * Nhược điểm:
-  -
+  - Tùy thuộc vào nhiệt độ T và độ làm lạnh alpha mà hiệu suất tìm đường đi đến táo tăng hoặc giảm.
+  - Đôi khi đường đi không khả thi với rắn dài.
 
 ### Môi trường không nhìn thấy
 * Ưu điểm:
-  -
+  - Có thể tìm thấy đường đi đến quả táo ngay cả khi không nhìn thấy.
 * Nhược điểm:
-  -
+  - Không khả thi cho môi trường lớn, rắn dài.
+  - Tiêu hao lớn về cả tài nguyên bộ nhớ, thời gian.
+  - Phức tạp trong việc áp dụng.
+  - Không phù hợp với game có môi trường động như Snake! \
+=> Không nên sử dụng để tìm kiếm đường đi từ rắn đến táo.
 
 ### Môi trường nhìn thấy một phần
 * Ưu điểm:
-  -
+  - Khả thi đối với những môi trường lớn hơn.
+  - Có sử dụng heuristic để khắc phục điểm yếu của tìm kiếm không nhìn thấy trong môi trường động.
 * Nhược điểm:
-  -
+  - Không đảm bảo tìm thấy đường đi ngắn nhất.
+  - Để thuật toán có thể hiệu quả, cần phải thiết kể heuristic một cách hợp lý.
 
 ### Backtracking
 * Ưu điểm:
-  -
+  - Nếu không có giới hạn hoặc limmit được cho giá trị hợp lý, thuật toán sẽ luôn tìm thấy đường đi.
+  - Có thể sử dụng heuristic để cải tiến thuật toán.
+  - Đơn giản và dễ dàng áp dụng, kết hợp với thuật toán khác.
 * Nhược điểm:
-  -
+  - Độ phức tạp về thời gian trong trường hợp xấu nhất lớn.
+  - Tiêu hao tài nguyên bộ nhớ.
+  - Tùy vào giới hạn limmit, rắn có thể không tìm thấy đường đi đến quả táo.
 
 ### AC3
 * Ưu điểm:
-  -
+  - Loại bỏ được những không gian trạng thái không hợp lệ với rằng buộc.
+  - Có thể kết hợp với những thuật toán khác, như Backtracking, ... để cải thiện hiệu quả quá trình tìm đường đi.
+  - Cực kỳ tốt trong những môi trường có rằng buộc mạnh.
 * Nhược điểm:
-  -
+  - Cần phải thực hiện tính domain của rắn dài, phức tạp làm tốn kém tài nguyên thời gian, bộ nhớ.
+  - Phức tạp trong việc áp dụng.
+  - Không phù hợp với game có môi trường động như Snake! \
+=> Không nên sử dụng để tìm kiếm đường đi từ rắn đến táo.
 
 ## **Kết luận**
