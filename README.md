@@ -127,4 +127,69 @@ Thuật toán Backtracking là một thuật toán đơn giản, sử dụng đ�
 ![Backtrack_demo](asset/Backtrack_demo.gif)
 
 ## *Ưu điểm, nhược điểm*
+
+### BFS
+* Ưu điểm:
+  - Luôn cố tìm đường đi ngắn nhất đến quả táo.
+  - Đơn giản, dễ áp dụng và sử dụng cùng các thuật toán khác.
+* Nhược điểm:
+  - Tiêu hao tài nguyên bộ nhớ.
+  - Không tối ưu với những môi tường lớn và rắn dài.
+
+### DFS
+* Ưu điểm:
+  - Không gian trạng thái nhỏ hơn BFS.
+* Nhược điểm:
+  - Không đảm bảo tìm được đường đi ngắn nhất đến quả táo.
+  - Khi môi trường lớn, rắn dài thì độ phức tạp về thời gian cao.
+  - Dễ lằm rắn bị mắc kẹt.
+
+### UCS
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### Greedy
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+  
+### Beam search
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### Simulated annealing
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### Môi trường không nhìn thấy
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### Môi trường nhìn thấy một phần
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### Backtracking
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
+### AC3
+* Ưu điểm:
+  -
+* Nhược điểm:
+  -
+
 ## **Kết luận**
