@@ -47,7 +47,7 @@ Thuật toán tìm kiếm theo chiều sâu bắt đầu từ đầu con rắn �
 ![DFS_pathfinding](asset/DFS.png)
 
 ### UCS
-Giống với BFS, thuật toán UCS cũng sử dụng phương thức quét cạn. Nhưng UCS khác biệt ở việc kèm theo chi phí g(n) cho các trạng thái. Môi trường game được đặt những khu vực với các mức độ "nguy hiểm" (+0, +1, +2, +3) và từ đó quyết định được đường đi cuối dùng ngắn và an toàn nhất cho con rắn.
+Thuật toán UCS khác biệt với những thuật toán trước ở việc kèm theo chi phí g(n) cho các trạng thái và từ đó tìm đường đi với chi phí ít nhất. Môi trường game được đặt những khu vực với các mức độ "nguy hiểm" (+0, +1, +2, +3) và từ đó quyết định được đường đi cuối dùng ngắn và an toàn nhất cho con rắn.
 Độ phức tạp trường hợp xấu nhất:
 - Không gian: 360
 - Thời gian: 360log(360)
