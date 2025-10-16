@@ -245,4 +245,5 @@ Phương hướng cải thiện:
 
 ## **Tài liệu tham khảo**
 [1] *PyGame Beginner Tutorial in Python - Adding Buttons*, Coding With Russ, https://www.youtube.com/watch?v=G8MYGDf_9ho \
-[2] *Snake Game in Python Tutorial with pygame(OOP)*, Programming With Nick, https://www.youtube.com/watch?v=1zVlRXd8f7g&t
+[2] *Snake Game in Python Tutorial with pygame(OOP)*, Programming With Nick, https://www.youtube.com/watch?v=1zVlRXd8f7g&t \
+[3] Russell, S. (2016). *Artificial Intelligence: A Modern Approach, Third Edition*. Pearson Education
