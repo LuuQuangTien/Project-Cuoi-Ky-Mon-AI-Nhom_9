@@ -14,7 +14,9 @@ Trong phần giới thiệu của Project, chúng em sẽ nói qua về những 
 - [Lý thuyết, nguyên lý cơ bản của thuật toán](#lý-thuyết-nguyên-lý-cơ-bản-của-thuật-toán)
 - [Demo các thuật toán](#demo-các-thuật-toán)
 - [Ưu điểm, nhược điểm](#ưu-điểm-nhược-điểm)
+- [Thuật toán tối ưu nhất](#thuật-toán-tối-ưu-nhất)
 - [Kết luận](#kết-luận)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
 
 ## *Thư viện*
 Trong quá trình xậy dựng game, nhóm có sử dụng những thư viện không có sẵn trong python:
@@ -178,6 +180,7 @@ Thuật toán Backtracking là một thuật toán đơn giản, sử dụng đ�
 * Nhược điểm:
   - Tùy thuộc vào nhiệt độ T và độ làm lạnh alpha mà hiệu suất tìm đường đi đến táo tăng hoặc giảm.
   - Đôi khi đường đi không khả thi với rắn dài.
+  - Khi không tìm được đường đi đến táo, phải tìm lại đường đi bắt đầu từ vị trí tốt nhất vừa tìm được.
 
 ### Môi trường không nhìn thấy
 * Ưu điểm:
@@ -218,4 +221,28 @@ Thuật toán Backtracking là một thuật toán đơn giản, sử dụng đ�
   - Không phù hợp với game có môi trường động như Snake! \
 => Không nên sử dụng để tìm kiếm đường đi từ rắn đến táo.
 
+## *Thuật toán tối ưu nhất*
+
+Sau khi thực hiện Demo tìm kiếm đường đi đến 10 quả táo, nhóm có dữ liệu số không gian trạng thái trung bình để tìm thấy đường đi đến mỗi quả táo cho mối thuật toán:
+- BFS: 197.9 trạng thái
+- DFS: 169.2 trạng thái
+- UCS: 133 trạng thái
+- Greedy: 16.4 trạng thái
+- Beam search: 44.5 trạng thái
+- Simulated annealing: 79.2 trạng thái
+- Môi trường nhìn thấy một phần: 88.1 trạng thái
+- Backtracking: 16.6 trạng thái \
+=> Ta thấy rằng, khi xét số không gian trạng thái đã đi qua. Thuật toán Greedy là thuật toán tối ưu nhất trong các thuật toán đã đề cập để thực hiện game Snake!
+
 ## **Kết luận**
+Qua Project này, những thành viên trong nhóm 9 đã hiểu biết thêm về những kiến thức về các thuật toán ứng dụng trong tìm kiếm đường đi. Đồng thời, cũng được bổ sung và bồi đắp thêm những kiến thức lập trình ngôn ngữ Python cùng với những thư viện và công cụ ngôn ngữ cung cấp. Tuy Project có thể chưa được tối ưu, thẩm mỉ nhưng những kinh nghiệm chúng em đạt được từ quá trính thực hiện sẽ đi theo suốt quá trình học tập và tìm kiếm, thực hiện việc làm trong tương lai chúng em.
+
+Phương hướng cải thiện:
+-	Bổ sung và cải thiện thuật toán: Cải tiến hàm heuristic để giúp rắn di chuyển mượt mà hơn
+-	Nâng cấp giao diện và trải nghiệm người dùng
+-	Tối ưu hiệu năng chương trình
+-	Phát triển phiên bản mở rộng: tạo chế độ nhiều người chơi hoặc các AI đấu với nhau
+
+## **Tài liệu tham khảo**
+[1] *PyGame Beginner Tutorial in Python - Adding Buttons*, Coding With Russ, https://www.youtube.com/watch?v=G8MYGDf_9ho
+[2] *Snake Game in Python Tutorial with pygame(OOP)*, Programming With Nick, https://www.youtube.com/watch?v=1zVlRXd8f7g&t
