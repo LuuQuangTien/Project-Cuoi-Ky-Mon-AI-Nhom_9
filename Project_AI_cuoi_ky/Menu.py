@@ -187,8 +187,8 @@ class Menu():
         sh.column_dimensions['E'].width = 50
 
         data_end_row = data_row
-        range_to_eaten = f'C3:C{data_end_row - 1}'
-        range_to_average = f'D3:D{data_end_row - 1}'
+        range_to_eaten = f'C3:C{data_end_row}'
+        range_to_average = f'D3:D{data_end_row}'
         average = f'=SUM({range_to_average}) / COUNTIF({range_to_eaten}, True)'
         sh.cell(row=summary_row, column=1, value="Average explored states:")
         avg_cell = sh.cell(row=summary_row, column=4, value=average)
