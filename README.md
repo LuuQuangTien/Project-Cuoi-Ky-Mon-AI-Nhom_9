@@ -52,7 +52,7 @@ Thuật toán UCS khác biệt với những thuật toán trước ở việc k
 - Không gian: 360
 - Thời gian: 360log(360)
 
-![UCS_pathfinding](asset/UCS.png)
+![UCS_pathfinding](asset/ucs.png)
 
 ## Greedy
 Khác với những thuật toán trước, Greedy sử dụng heuristic h(n) để tìm đường đi tốt nhất tại thời điểm đó và đi đến quả táo. Trong Project, heuristic được kết hợp giữa 3 hàm tính toán. Flood fill từ quả táo đến đầu con rắn, Flood fill từ đuôi con rắn đến đầu con rắn giúp rắn tránh việc tự kẹt mình (bằng cách đuổi theo đuôi) và Flood fill để phạt con rắn khi nó đi vào những vị trí hẹp có thể làm nó bị kẹt.
